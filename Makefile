@@ -1,13 +1,14 @@
 all: help
 .PHONY : all
 
+VER=3
 PACKAGE_NAME='sublime-yasi.sublime-package'
-PACKAGE_FOLDER = '$(APPDATA)\Sublime Text 3\Installed Packages'
+PACKAGE_FOLDER = '$(APPDATA)\Sublime Text $(VER)\Installed Packages'
 OS = $(shell uname)
 ifeq ($(OS),Darwin)
-	PACKAGE_FOLDER='~/Library/Application Support/Sublime Text 3/Installed Packages'
+	PACKAGE_FOLDER='~/Library/Application Support/Sublime Text $(VER)/Installed Packages'
 else ifeq ($(OS),Linux)
-	PACKAGE_FOLDER='~/.config/sublime-text-3/Installed Packages'
+	PACKAGE_FOLDER='~/.config/sublime-text-$(VER)/Installed Packages'
 endif
 
 dist:zip
