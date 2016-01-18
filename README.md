@@ -5,7 +5,7 @@
 Enables correct lisp code indentation from within Sublime Text 3.
 
 ### Installation
-It's not in [Package Control][pkg] yet, so you'll have to install it the repo way:
++ The repo way:
 
   + Hit `Ctrl+Shift+P`
   + Launch `Add Repository`
@@ -13,6 +13,13 @@ It's not in [Package Control][pkg] yet, so you'll have to install it the repo wa
   + `Ctrl+Shift+P` again
   + Click `Install Package`, lookup **yasi** and install it
 
++ Standard way(via [Package Control][pkg]):
+  + Hit `Ctrl+Shift+P` > `Install Package` search for **yasi** and install it
+
++ Manually:
+  + Clone repo or download [master.zip][zip]
+  + Run `make VER=2` to install for Sublime 2 or `make VER=3` for Sublime 3
+  + Restart editor
 
 ### Key bindings
 Hit `Ctrl+r` to indent the selection or alternatively navigate to the **Selection**
@@ -29,3 +36,4 @@ As usual the bindings can be changed from the **Preferences** menu
 [tag]: https://img.shields.io/github/tag/nkmathew/sublime-yasi.svg
 [tag~]: https://github.com/nkmathew/sublime-yasi/releases
 [pkg]: https://packagecontrol.io/
+[zip]: https://github.com/nkmathew/sublime-yasi/archive/master.zip
