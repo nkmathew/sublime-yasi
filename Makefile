@@ -2,7 +2,7 @@ all: help
 .PHONY : all
 
 VER=3
-PACKAGE_NAME='sublime-yasi.sublime-package'
+PACKAGE_NAME=yasi.sublime-package
 PACKAGE_FOLDER = '$(APPDATA)\Sublime Text $(VER)\Installed Packages'
 OS = $(shell uname)
 ifeq ($(OS),Darwin)
@@ -18,11 +18,11 @@ dist:zip
 
 DEPS=*.sublime-keymap *.sublime-menu *.py
 
-sublime-yasi.sublime-package: $(DEPS)
+$(PACKAGE_NAME): $(DEPS)
 	@echo Zipping package $(PACKAGE_NAME)
 	@7z a -tzip $(PACKAGE_NAME) $(DEPS) > /dev/null
 
-zip: sublime-yasi.sublime-package
+zip: $(PACKAGE_NAME)
 .PHONY : zip
 
 help:
