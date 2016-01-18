@@ -1,16 +1,22 @@
+""" sublime-yasi
+
+Date: 19th January 2016
+Author: nkmathew <kipkoechmathew@gmail.com>
+"""
+
 import sublime
 import sublime_plugin
 import re
-import sys
-import os
-from pprint import pprint
 
-# Hack to make yasi import properly. It doesn't seem to work without it even though
-# technically it should
-sys.path.append(os.path.dirname(__file__))
-import yasi
+try:
+    import yasi
+except ImportError:
+    from . import yasi
+
+__version__ = '0.1.2'
 
 class IndentSexpCommand(sublime_plugin.TextCommand):
+    """ Handles indent_sexp command """
     def __init__(self, view):
         """ init """
         self.view = view
