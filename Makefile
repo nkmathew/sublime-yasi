@@ -2,7 +2,7 @@ all: help
 .PHONY : all
 
 VER=3
-PACKAGE_NAME=sublime-yasi.sublime-package
+PACKAGE_NAME=yasi-indenter.sublime-package
 PACKAGE_FOLDER = '$(APPDATA)\Sublime Text $(VER)\Installed Packages'
 OS = $(shell uname)
 ifeq ($(OS),Darwin)
