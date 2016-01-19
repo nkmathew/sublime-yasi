@@ -36,7 +36,7 @@ As usual the bindings can be changed from the **Preferences** menu
 
 [tag]: https://img.shields.io/github/tag/nkmathew/sublime-yasi.svg
 [tag~]: https://github.com/nkmathew/sublime-yasi/releases
-[pkg-downloads]: https://packagecontrol.io/packages/yasi-indenter
-[pkg-downloads~]: https://packagecontrol.herokuapp.com/downloads/yasi-indenter.svg
+[pkg-downloads]: https://packagecontrol.herokuapp.com/downloads/yasi-indenter.svg
+[pkg-downloads~]: https://packagecontrol.io/packages/yasi-indenter
 [pkg]: https://packagecontrol.io/
 [zip]: https://github.com/nkmathew/sublime-yasi/archive/master.zip
