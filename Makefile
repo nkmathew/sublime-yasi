@@ -25,8 +25,15 @@ $(PACKAGE_NAME): $(DEPS)
 zip: $(PACKAGE_NAME)
 .PHONY : zip
 
+check:
+	pep8 indent.py
+	@printf "\n-------------------\n"
+	pylint indent.py
+.PHONY : check
+
 help:
 	@echo "Targets:"
 	@echo " -> zip"
 	@echo " -> dist"
+	@echo " -> check"
 .PHONY : help
