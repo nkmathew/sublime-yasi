@@ -20,7 +20,6 @@ Enables correct lisp code indentation from within Sublime Text 3.
 + Manually:
   + Clone repo or download [master.zip][zip]
   + Run `make VER=2` to install for Sublime 2 or `make VER=3` for Sublime 3
-  + Restart editor
 
 ### Key bindings
 Hit `Ctrl+r` to indent the selection or alternatively navigate to the **Selection**
