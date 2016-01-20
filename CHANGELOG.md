@@ -1,3 +1,8 @@
+### Unreleased
+
+Fixes:
+  - Dialect/language setting not being passed when indenting a selection
+
 ### v0.1.2 - 18th January 2016
 
 Fixes:
