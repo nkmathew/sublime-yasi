@@ -4,8 +4,8 @@ Date: 19th January 2016
 Author: nkmathew <kipkoechmathew@gmail.com>
 """
 
-import sublime
-import sublime_plugin
+import sublime         # pylint: disable=import-error
+import sublime_plugin  # pylint: disable=import-error
 import re
 
 try:
