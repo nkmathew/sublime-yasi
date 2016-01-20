@@ -79,7 +79,9 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
                     # Get the selected text
                     selection = self.view.substr(region)
                     # Indent it with yasi
-                    result = yasi.indent_code(selection, '--no-compact')
+                    dialect = self.dialect()
+                    yasi_args = '--no-compact --dialect={0}'.format(dialect)
+                    result = yasi.indent_code(selection, yasi_args)
                     indented_code = ''.join(result[-1])
                     # Replace the selection with transformed text
                     self.view.replace(edit, region, indented_code)
@@ -92,7 +94,8 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
                 last_50_lines = self.get_line(line_number) + last_50_lines
                 line_number -= 1
                 count += 1
-            yasi_args = '--no-compact --dialect={0}'.format(self.dialect())
+            dialect = self.dialect()
+            yasi_args = '--no-compact --dialect={0}'.format(dialect)
             result = yasi.indent_code(last_50_lines, yasi_args)
             if result:
                 curr_line_region = self.line_region(self.curr_line())
