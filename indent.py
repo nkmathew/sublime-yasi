@@ -15,6 +15,7 @@ except ImportError:
 
 __version__ = '0.1.2'
 
+
 class IndentSexpCommand(sublime_plugin.TextCommand):
     """ Handles indent_sexp command """
     def __init__(self, view):
