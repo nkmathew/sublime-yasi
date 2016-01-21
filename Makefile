@@ -20,6 +20,7 @@ DEPS=*.sublime-keymap *.sublime-menu *.py
 
 $(PACKAGE_NAME): $(DEPS)
 	@echo Zipping package $(PACKAGE_NAME)
+	@rm -f $(PACKAGE_NAME)
 	@7z a -tzip $(PACKAGE_NAME) $(DEPS) > /dev/null
 
 zip: $(PACKAGE_NAME)
