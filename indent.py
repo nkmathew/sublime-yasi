@@ -70,6 +70,19 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         match = re.match('newlisp|clojure|lisp|scheme', syntax, re.I)
         return bool(match)
 
+    def prev_lines(self, nlines):
+        """ Returns a list of the previous specified number of lines with their
+        line ends
+        """
+        x_lines = []
+        line_number = self.curr_line()
+        count = 0
+        while line_number >= 0 and count <= nlines:
+            x_lines.insert(0, self.get_line(line_number))
+            line_number -= 1
+            count += 1
+        return x_lines
+
     def run(self, edit):
         """ Entry point """
         regions = self.view.sel()
@@ -88,16 +101,10 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
                     self.view.replace(edit, region, indented_code)
         else:
             # Indent current line if command is invoked when there's no selection
-            last_50_lines = ''
-            line_number = self.caret_pos()[0]
-            count = 0
-            while line_number >= 0 and count <= 50:
-                last_50_lines = self.get_line(line_number) + last_50_lines
-                line_number -= 1
-                count += 1
+            prev_50_lines = ''.join(self.prev_lines(50))
             dialect = self.dialect()
             yasi_args = '--no-compact --dialect={0}'.format(dialect)
-            result = yasi.indent_code(last_50_lines, yasi_args)
+            result = yasi.indent_code(prev_50_lines, yasi_args)
             if result:
                 curr_line_region = self.line_region(self.curr_line())
                 curr_indented_line = result[-1][-1]
