@@ -1,3 +1,6 @@
 [
-    { "keys": ["ctrl+r"], "command": "indent_sexp" }
+    {
+        "keys": ["ctrl+r"],
+        "command": "indent_sexp"
+    }
 ]
