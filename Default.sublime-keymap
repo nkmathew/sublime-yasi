@@ -1,7 +1,7 @@
 [
     {
         "keys": ["enter"],
-        "command": "indent_sexp_newline"
+        "command": "indent_sexp_auto"
     },
     {
         "keys": ["ctrl+r"],
