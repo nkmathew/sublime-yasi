@@ -20,7 +20,7 @@ __version__ = '0.1.2'
 
 
 def log(msg):
-    """ Logging """
+    """ Logs messages to Sublime console """
     print('yasi: %s' % msg)
 
 
@@ -31,7 +31,13 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         self.view = view
 
     def get_line(self, lnum=None):
-        """ Returns contents of a certain line. Supports negative indexing """
+        """ get_line(lnum : int) -> str
+
+        >>> get_line(-1)
+        >>> get_line()
+
+        Returns contents of a certain line. Supports negative indexing
+        """
         lnum = lnum or self.curr_line()
         if lnum < 0:
             lnum = self.curr_line() + lnum
@@ -40,35 +46,75 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         text = self.view.substr(region)
         return text
 
-    def line_region(self, lnum):
-        """ Returns region bounds for supplied line number """
+    def line_region(self, lnum=None):
+        """ line_region(lnum : int) -> sublime.Region
+
+        >>> line_region(0) ## Doesn't support indexing btw
+        (0, 9)
+        >>> line_region(0).begin()
+        0
+        >>> line_region(0).end()
+        9
+
+        Returns region bounds for supplied line number """
+        lnum = lnum or self.curr_line()
+        if lnum < 0:
+            lnum = self.curr_line() + lnum
+        lnum = lnum if lnum >= 0 else 0
         point = self.view.text_point(lnum, 0)
         region = self.view.full_line(sublime.Region(point, point))
         return region
 
     def caret_pos(self):
-        """ Cursor position in row-column tuple """
+        """ caret_pos() -> tuple
+
+        >>> caret_pos()
+        (11, 2)
+
+        Current cursor position in row-column tuple """
         return self.view.rowcol(self.view.sel()[0].begin())
 
     def caret_offset(self):
-        """
-        Cursor position in terms of the number of characters from the start of
+        """ caret_offset() -> int
+
+        >>> caret_offset()
+        1345
+
+        Current cursor position in terms of the number of characters from the start of
         the file
         """
         return self.view.sel()[0].begin()
 
     def curr_line(self):
-        """ Returns the line number of the current line """
+        """ curr_line() -> int
+
+        >>> curr_line()
+        25
+
+        Returns the line number of the current line """
         return self.caret_pos()[0]
 
     def get_syntax(self):
-        """ Retuns current file syntax/language """
+        """ get_syntax() -> str
+
+        >>> get_syntax()
+        'newLISP'
+
+        >>> get_syntax()
+        'Lisp'
+
+        Retuns current file syntax/language """
         syntax = self.view.settings().get('syntax')
         syntax = syntax.split('/')[-1].replace('.tmLanguage', '')
         return syntax
 
     def dialect(self):
-        """ Translate language name setting to a recognized dialect by yasi """
+        """ dialect() -> str
+
+        >>> dialect()
+        'clojure'
+
+        Translate current language setting to a dialect recognized by yasi """
         syntax = self.get_syntax()
         dialect = 'all'
         if re.match('newlisp', syntax, re.I):
@@ -82,18 +128,35 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         return dialect
 
     def is_enabled(self):
-        """
-        Disables command when not editing a lisp or lisp-like language
+        """ is_enabled() -> bool
+
+        Returns True or False on whether the current file is a lisp or lisp-like
+        language handled by yasi
+
+        The method is called by the editor to determine whether to disable the
+        'Indent S-expression' menu command
         """
         syntax = self.get_syntax()
         match = re.match('newlisp|clojure|lisp|scheme', syntax, re.I)
         return bool(match)
 
     def prev_lines(self, nlines, line_number=None):
-        """
-        Returns a list of the previous specified number of lines with their
-        line ends from the specified line number including the current line.
-        Starts counting from the current line if the second argument is not provided
+        """ prev_lines(nlines : int) -> [str]
+
+        Arguments:
+        nlines: Number of lines to get
+        line_number: The starting line number. Defaults to the current line
+
+        >>> prev_lines(5)
+        ['(defn get-neighbors [[x y] v]\n',
+        '  (for [y1\n',
+        '       ss\n',
+        '       \n',
+        '       (range (dec y) (+ y 2))\n',
+        '       x1 (range (dec x) (+ x 2))\n']
+
+        Returns a list of the previous specified number of lines including the
+        contents of the specified line number
         """
         line_number = line_number or self.curr_line()
         x_lines = []
@@ -105,8 +168,10 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         return x_lines
 
     def indent_line(self, linenum, context_lines):
-        """
-        Returns info on the current indented line
+        """ indent_line(linenum : int, context_lines : int) -> [...]
+
+        Indents the last x number of lines and returns information on the current
+        state e.g open brackets, the indented code, string/comment states
         """
         prev_x_lines = ''.join(self.prev_lines(context_lines, linenum))
         dialect = self.dialect()
