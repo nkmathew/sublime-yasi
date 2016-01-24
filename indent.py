@@ -197,11 +197,10 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
                     self.view.replace(edit, region, indented_code)
         else:
             # Indent current line if command is invoked when there's no selection
-            indented_line = self.indent_line(self.curr_line(), 50)[-1]
-            if indented_line:
-                indented_line = indented_line[-1]
-            else:
-                indented_line = ''
+            indented_lines = self.indent_line(self.curr_line(), 50)[-1]
+            indented_line = ''
+            if indented_lines:
+                indented_line = indented_lines[-1]
             curr_line_region = self.line_region(self.curr_line())
             self.view.replace(edit, curr_line_region, indented_line)
 
@@ -213,7 +212,6 @@ class IndentSexpNewlineCommand(IndentSexpCommand):
         offset = self.caret_offset()
         start_pos = offset - 2000
         start_pos = start_pos if start_pos >= 0 else 0
-        pair = [start_pos, offset]
         code = ''
         seen_string = True
         rx_str_comment = re.compile('comment\.|string\.')
