@@ -21,12 +21,20 @@ Enables correct lisp code indentation from within Sublime Text 3.
   + Clone repo or download [master.zip][zip]
   + Run `make VER=2` to install for Sublime 2 or `make VER=3` for Sublime 3
 
-### Key bindings
-Hit `Ctrl+r` to indent the selection or alternatively navigate to the **Selection**
-menu then **Format** then **Indent S-expression**.
+### Features
++ Indenting selections:
 
-Hitting `Ctrl-r` without an existing selection will result in the current line being
-reindented.
+  Hit `Ctrl+r` to indent the selection or alternatively navigate to the **Selection**
+  menu then **Format** then **Indent S-expression**.
+
++ Indenting the current line:
+
+  Hitting `Ctrl-r` without an existing selection will result in the current line
+  being reindented.
+
++ Auto-indentation:
+
+  Auto-indents the next line when the enter key is pressed
 
 As usual the bindings can be changed from the **Preferences** menu
 
