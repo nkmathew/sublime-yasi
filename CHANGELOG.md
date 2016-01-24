@@ -1,4 +1,7 @@
-### Unreleased
+### v0.2.0 - 24th January 2016
+
+Features:
+  - Auto-indentation on enter keypress
 
 Fixes:
   - Dialect/language setting not being passed when indenting a selection
