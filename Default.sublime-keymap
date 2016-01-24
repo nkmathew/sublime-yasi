@@ -1,5 +1,9 @@
 [
     {
+        "keys": ["enter"],
+        "command": "indent_sexp_newline"
+    },
+    {
         "keys": ["ctrl+r"],
         "command": "indent_sexp"
     }
