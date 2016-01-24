@@ -1,3 +1,8 @@
+### Unreleased
+
+Features:
+  - Context menu entry for launching indenter
+
 ### v0.2.0 - 24th January 2016
 
 Features:
