@@ -24,8 +24,9 @@ def log(msg):
     print('yasi: %s' % msg)
 
 
-class IndentSexpCommand(sublime_plugin.TextCommand):
+class SexpIndentCommand(sublime_plugin.TextCommand):
     """ Handles indent_sexp command """
+
     def __init__(self, view):
         """ init """
         self.view = view
@@ -84,6 +85,13 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         the file
         """
         return self.view.sel()[0].begin()
+
+    def file_contents(self):
+        """ file_contents() -> str
+
+        Returns contents of the whole file
+        """
+        return self.view.substr(sublime.Region(0, self.view.size()))
 
     def curr_line(self):
         """ curr_line() -> int
@@ -179,6 +187,10 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
         result = yasi.indent_code(prev_x_lines, yasi_args)
         return result
 
+
+class IndentSexpCommand(SexpIndentCommand):
+    """ Command to indent sexp selections and single lines """
+
     def run(self, edit):
         """ Entry point """
         regions = self.view.sel()
@@ -205,8 +217,8 @@ class IndentSexpCommand(sublime_plugin.TextCommand):
             self.view.replace(edit, curr_line_region, indented_line)
 
 
-class IndentSexpNewlineCommand(IndentSexpCommand):
-    """ Handles indent_sexp_newline command """
+class IndentSexpAutoCommand(SexpIndentCommand):
+    """ Handles indent_sexp_auto command """
     def run(self, edit):
         """ Called when the enter key is pressed in a lisp file """
         offset = self.caret_offset()
@@ -241,3 +253,26 @@ class IndentSexpNewlineCommand(IndentSexpCommand):
             self.view.insert(edit, offset, '\n' + '  ' * curr_indent)
         else:
             self.view.insert(edit, offset, '\n')
+
+
+class IndentSexpFileCommand(SexpIndentCommand):
+    """ Indents the whole file """
+
+    def run(self, edit):
+        """ Entry point """
+        contents = self.file_contents()
+        dialect = self.dialect()
+        yasi_args = '--no-compact -ic --dialect={0}'.format(dialect)
+        result = yasi.indent_code(contents, yasi_args)
+        indented_code = ''.join(result[-1])
+        file_region = sublime.Region(0, self.view.size())
+        self.view.replace(edit, file_region, indented_code)
+
+
+class OnSaveListener(sublime_plugin.EventListener):
+    """ Before save event listener """
+
+    # pylint: disable=no-self-use
+    def on_pre_save(self, view):
+        """ Handler method """
+        view.window().run_command('indent_sexp_file')
