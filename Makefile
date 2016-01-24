@@ -16,7 +16,7 @@ dist:zip
 	@cp $(PACKAGE_NAME) $(PACKAGE_FOLDER)
 .PHONY : dist
 
-DEPS=*.sublime-keymap *.sublime-menu *.py
+DEPS=*.sublime-keymap *.sublime-menu *.py *.sublime-settings
 
 $(PACKAGE_NAME): $(DEPS)
 	@echo Zipping package $(PACKAGE_NAME)
