@@ -1,4 +1,7 @@
-### Unreleased
+### v0.3.0 - 25th January 2016
+
+Fixes:
+  - Enter key not being released when editing any other non lisp file
 
 Features:
   - Context menu entry for launching indenter
