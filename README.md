@@ -36,7 +36,20 @@ Enables correct lisp code indentation from within Sublime Text 3.
 
   Auto-indents the next line when the enter key is pressed
 
-As usual the bindings can be changed from the **Preferences** menu
++ Indenting file on save(opt-out feature, see [preferences](#preferences))
+
+### Preferences
+To turn off file auto-indentation on save go to the user settings in,
+![Prefences > Package Settings > yasi-indenter > Settings - User][img]
+
+and change the value to `false` like so:
+
+```js
+{
+    "indent_sexp_on_save": false
+}
+```
+
 
 ### Screencast
 ![Demo](http://imgur.com/TlQgSFb.png)
@@ -47,3 +60,4 @@ As usual the bindings can be changed from the **Preferences** menu
 [pkg-downloads~]: https://packagecontrol.io/packages/yasi-indenter
 [pkg]: https://packagecontrol.io/
 [zip]: https://github.com/nkmathew/sublime-yasi/archive/master.zip
+[img]: http://i.imgur.com/yazls5v.png
