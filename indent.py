@@ -87,10 +87,12 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
 
         Returns contents of a certain line. Supports negative indexing
         """
-        lnum = lnum or self.curr_line()
+        if lnum is None:
+            lnum = self.curr_line()
         if lnum < 0:
             lnum = self.curr_line() + lnum
         lnum = lnum if lnum >= 0 else 0
+        log('Received: %d' % lnum)
         region = self.line_region(lnum)
         text = self.view.substr(region)
         return text
@@ -106,7 +108,8 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         9
 
         Returns region bounds for supplied line number """
-        lnum = lnum or self.curr_line()
+        if lnum is None:
+            lnum = self.curr_line()
         if lnum < 0:
             lnum = self.curr_line() + lnum
         lnum = lnum if lnum >= 0 else 0
@@ -184,8 +187,10 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         line_number = line_number or self.curr_line()
         x_lines = []
         count = 0
+        # log('nlines: %d' % nlines)
         while line_number >= 0 and count <= nlines:
-            x_lines.insert(0, self.get_line(line_number))
+            line = self.get_line(line_number)
+            x_lines.insert(0, line)
             line_number -= 1
             count += 1
         return x_lines
@@ -219,12 +224,12 @@ class IndentSexpCommand(SexpIndentCommand):
                     dialect = get_dialect(self.view)
                     yasi_args = '--no-compact -ic --dialect={0}'.format(dialect)
                     result = yasi.indent_code(selection, yasi_args)
-                    indented_code = ''.join(result[-1])
+                    indented_code = ''.join(result['indented_code'])
                     # Replace the selection with transformed text
                     self.view.replace(edit, region, indented_code)
         else:
             # Indent current line if command is invoked when there's no selection
-            indented_lines = self.indent_line(self.curr_line(), 50)[-1]
+            indented_lines = self.indent_line(self.curr_line(), 50)['indented_code']
             indented_line = ''
             if indented_lines:
                 indented_line = indented_lines[-1]
@@ -260,7 +265,7 @@ class IndentSexpAutoCommand(SexpIndentCommand):
         dialect = get_dialect(self.view)
         yasi_args = '--no-compact --dialect={0}'.format(dialect)
         result = yasi.indent_code(code, yasi_args)
-        open_brackets = result[-4]
+        open_brackets = result['bracket_locations']
         if open_brackets:
             indent_level = open_brackets[-1]['indent_level']
             self.view.insert(edit, offset, '\n' + ' ' * indent_level)
@@ -281,7 +286,7 @@ class IndentSexpFileCommand(SexpIndentCommand):
         dialect = get_dialect(self.view)
         yasi_args = '--no-compact -ic --dialect={0}'.format(dialect)
         result = yasi.indent_code(contents, yasi_args)
-        indented_code = ''.join(result[-1])
+        indented_code = ''.join(result['indented_code'])
         file_region = sublime.Region(0, self.view.size())
         self.view.replace(edit, file_region, indented_code)
 
