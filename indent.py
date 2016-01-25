@@ -92,7 +92,6 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         if lnum < 0:
             lnum = self.curr_line() + lnum
         lnum = lnum if lnum >= 0 else 0
-        log('Received: %d' % lnum)
         region = self.line_region(lnum)
         text = self.view.substr(region)
         return text
