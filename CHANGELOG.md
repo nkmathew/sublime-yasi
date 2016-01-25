@@ -1,3 +1,12 @@
+### v0.4.2 - 26th January 2016
+- Update to yasi v2.0.1
+
+### v0.4.1 - 25th January 2016
+
+Fixes:
+  - Forgot to remove logging function call used in debugging
+
+
 ### v0.4.0 - 25th January 2016
 
 Fixes:
