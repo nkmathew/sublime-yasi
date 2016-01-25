@@ -1,3 +1,8 @@
+### v0.4.0 - 25th January 2016
+
+Fixes:
+  - Made to work with the updated yasi version(v2.0.0)
+
 ### v0.3.0 - 25th January 2016
 
 Fixes:
