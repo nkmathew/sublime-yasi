@@ -25,7 +25,7 @@ import difflib
 # pylint: disable=unused-import
 from pprint import pprint
 
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 
 
 def create_args_parser():
@@ -768,7 +768,10 @@ def _push_to_list(lst, func_name, char, line, offset,
         # functions. The 'labels' indentation may not be exactly
         # perfect.
         parent_func = lst[-3]['func_name']
-        if keywords[parent_func] == KEYWORD4:
+        # Make 'special' indentation occur only in a Clojure binding block([]) for
+        # letfns
+        non_bind_block = opts.dialect == 'clojure' and lst[-2]['character'] != '['
+        if keywords[parent_func] == KEYWORD4 and not non_bind_block:
             lst[-1]['indent_level'] = offset + opts.indent_size
     except IndexError:
         pass
@@ -782,19 +785,20 @@ def indent_code(original_code, options=None):
     fpath: Simply used in formatting the warning messages
 
     >>> indent_code("(print\n'Hello)")
-    [(),
-     False,
-     (),
-     [],
-     [],
-     False,
-     0,
-     False,
-     [],
-     (),
-     '',
-     "(print\n'Hello)",
-     "(print\n 'Hello)"]
+    {'bracket_locations': [],
+     'comment_locations': [],
+     'in_comment': 0,
+     'in_newlisp_tag_string': False,
+     'in_string': False,
+     'in_symbol_with_space': False,
+     'indented_code': ['(print\n', " 'Hello)"],
+     'last_quote_location': (),
+     'last_symbol_location': (),
+     'message_stack': [],
+     'newlisp_brace_locations': [],
+     'original_code': ['(print\n', "'Hello)"],
+     'first_tag_string': ()}
+
 
     The last entry in the list is the indented string.
     """
@@ -1039,7 +1043,7 @@ def indent_code(original_code, options=None):
         line_number += 1
     res = {
         'message_stack': message_stack,
-        'wirst_tag_string': first_tag_string,
+        'first_tag_string': first_tag_string,
         'in_newlisp_tag_string': in_newlisp_tag_string,
         'last_symbol_location': last_symbol_location,
         'comment_locations': comment_locations,
@@ -1071,15 +1075,15 @@ def colour_diff(diff_lines):
     colorama.init()
 
     def p_green(text):
-        """ Print added line in green"""
+        """ Print added line in green """
         print(colorama.Fore.GREEN + text + colorama.Fore.WHITE, end='')
 
     def p_yellow(text):
-        """ Print diff section header in yellow"""
+        """ Print diff section header in yellow """
         print(colorama.Fore.YELLOW + text + colorama.Fore.WHITE, end='')
 
     def p_red(text):
-        """ Print removed line in red"""
+        """ Print removed line in red """
         print(colorama.Fore.RED + text + colorama.Fore.WHITE, end='')
     section = re.compile('@@\s+-\d\d,\d\d\s\+\d\d,\d\d\s+@@')
     for line in diff_lines:
