@@ -31,6 +31,13 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         """ init """
         self.view = view
 
+    def indent_file_on_save(self):
+        """ Reads user setting on whether the file should be indented on save """
+        gsettings = sublime.load_settings('yasi-indenter.sublime-settings')
+        gindent = gsettings.get('indent_sexp_on_save', True)
+        indent = self.view.settings().get('indent_sexp_on_save', gindent)
+        return indent and isinstance(indent, bool)
+
     def get_line(self, lnum=None):
         """ get_line(lnum : int) -> str
 
@@ -260,6 +267,8 @@ class IndentSexpFileCommand(SexpIndentCommand):
 
     def run(self, edit):
         """ Entry point """
+        if not self.indent_file_on_save():
+            return
         contents = self.file_contents()
         dialect = self.dialect()
         yasi_args = '--no-compact -ic --dialect={0}'.format(dialect)
@@ -272,7 +281,9 @@ class IndentSexpFileCommand(SexpIndentCommand):
 class OnSaveListener(sublime_plugin.EventListener):
     """ Before save event listener """
 
-    # pylint: disable=no-self-use
+    def __init__(self):
+        self.command_name = 'indent_sexp_file'
+
     def on_pre_save(self, view):
         """ Handler method """
-        view.window().run_command('indent_sexp_file')
+        view.window().run_command(self.command_name)
