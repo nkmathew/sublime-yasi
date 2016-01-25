@@ -24,6 +24,47 @@ def log(msg):
     print('yasi: %s' % msg)
 
 
+def get_syntax(view):
+    """ get_syntax(view : sublime.View) -> str
+
+    >>> get_syntax(view)
+    'newLISP'
+
+    >>> get_syntax(view)
+    'Lisp'
+
+    Retuns current file syntax/language
+    """
+    syntax = view.settings().get('syntax')
+    syntax = syntax.split('/')[-1].replace('.tmLanguage', '')
+    return syntax
+
+
+def get_dialect(view):
+    """ get_dialect(view : sublime.View) -> str
+
+    >>> get_dialect(view)
+    'clojure'
+
+    Translate current language setting to a dialect recognized by yasi """
+    syntax = get_syntax(view)
+    dialect = ''
+    if re.match('newlisp', syntax, re.I):
+        dialect = 'newlisp'
+    elif re.match('clojure', syntax, re.I):
+        dialect = 'clojure'
+    elif re.match('scheme', syntax, re.I):
+        dialect = 'scheme'
+    elif re.match('lisp', syntax, re.I):
+        dialect = 'lisp'
+    return dialect
+
+
+def is_lisp_like(view):
+    """ Check for a lisp like file using the current language/syntax setting """
+    return get_dialect(view) != ''
+
+
 class SexpIndentCommand(sublime_plugin.TextCommand):
     """ Handles indent_sexp command """
 
@@ -109,39 +150,6 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         Returns the line number of the current line """
         return self.caret_pos()[0]
 
-    def get_syntax(self):
-        """ get_syntax() -> str
-
-        >>> get_syntax()
-        'newLISP'
-
-        >>> get_syntax()
-        'Lisp'
-
-        Retuns current file syntax/language """
-        syntax = self.view.settings().get('syntax')
-        syntax = syntax.split('/')[-1].replace('.tmLanguage', '')
-        return syntax
-
-    def dialect(self):
-        """ dialect() -> str
-
-        >>> dialect()
-        'clojure'
-
-        Translate current language setting to a dialect recognized by yasi """
-        syntax = self.get_syntax()
-        dialect = 'all'
-        if re.match('newlisp', syntax, re.I):
-            dialect = 'newlisp'
-        elif re.match('clojure', syntax, re.I):
-            dialect = 'clojure'
-        elif re.match('scheme', syntax, re.I):
-            dialect = 'scheme'
-        elif re.match('lisp', syntax, re.I):
-            dialect = 'lisp'
-        return dialect
-
     def is_enabled(self):
         """ is_enabled() -> bool
 
@@ -151,7 +159,7 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         The method is called by the editor to determine whether to disable the
         'Indent S-expression' menu command
         """
-        syntax = self.get_syntax()
+        syntax = get_syntax(self.view)
         match = re.match('newlisp|clojure|lisp|scheme', syntax, re.I)
         return bool(match)
 
@@ -189,7 +197,7 @@ class SexpIndentCommand(sublime_plugin.TextCommand):
         state e.g open brackets, the indented code, string/comment states
         """
         prev_x_lines = ''.join(self.prev_lines(context_lines, linenum))
-        dialect = self.dialect()
+        dialect = get_dialect(self.view)
         yasi_args = '--no-compact --dialect={0}'.format(dialect)
         result = yasi.indent_code(prev_x_lines, yasi_args)
         return result
@@ -208,7 +216,7 @@ class IndentSexpCommand(SexpIndentCommand):
                     # Get the selected text
                     selection = self.view.substr(region)
                     # Indent it with yasi
-                    dialect = self.dialect()
+                    dialect = get_dialect(self.view)
                     yasi_args = '--no-compact -ic --dialect={0}'.format(dialect)
                     result = yasi.indent_code(selection, yasi_args)
                     indented_code = ''.join(result[-1])
@@ -249,7 +257,7 @@ class IndentSexpAutoCommand(SexpIndentCommand):
             else:
                 code += curr_char
                 seen_string = False
-        dialect = self.dialect()
+        dialect = get_dialect(self.view)
         yasi_args = '--no-compact --dialect={0}'.format(dialect)
         result = yasi.indent_code(code, yasi_args)
         open_brackets = result[-4]
@@ -270,7 +278,7 @@ class IndentSexpFileCommand(SexpIndentCommand):
         if not self.indent_file_on_save():
             return
         contents = self.file_contents()
-        dialect = self.dialect()
+        dialect = get_dialect(self.view)
         yasi_args = '--no-compact -ic --dialect={0}'.format(dialect)
         result = yasi.indent_code(contents, yasi_args)
         indented_code = ''.join(result[-1])
@@ -287,3 +295,17 @@ class OnSaveListener(sublime_plugin.EventListener):
     def on_pre_save(self, view):
         """ Handler method """
         view.window().run_command(self.command_name)
+
+
+class EnterKeyListener(sublime_plugin.EventListener):
+    """ Enter key context listener """
+
+    def __init__(self):
+        self.context_name = 'in_lisp_like_file'
+
+    # pylint: disable=unused-argument
+    def on_query_context(self, view, key, operator, operand, match_all):
+        """ Releases enter key when not editing a lisp-like file """
+        if key == self.context_name:
+            enable = is_lisp_like(view)
+            return enable

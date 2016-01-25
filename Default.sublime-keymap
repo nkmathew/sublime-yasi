@@ -1,7 +1,13 @@
 [
     {
         "keys": ["enter"],
-        "command": "indent_sexp_auto"
+        "command": "indent_sexp_auto",
+        "context":
+        [
+            {
+                "key": "in_lisp_like_file"
+            }
+        ]
     },
     {
         "keys": ["ctrl+r"],
