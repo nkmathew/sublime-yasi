@@ -6,7 +6,7 @@
     ```clojure
       (blablabla "that stuff: " []
                                 (println "blablabla!"))
-    ``
+    ```
     Placing the cursor between the square brackets and hitting enter will place the
     closing square bracket below the word **that**
 
