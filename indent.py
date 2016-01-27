@@ -244,7 +244,6 @@ class IndentSexpAutoCommand(SexpIndentCommand):
         start_pos = offset - 2000
         start_pos = start_pos if start_pos >= 0 else 0
         code = ''
-        seen_string = True
         rx_str_comment = re.compile('comment\.|string\.')
         curr_line = self.get_line()
         curr_indent = re.search('^\s*', curr_line).end()
@@ -255,12 +254,9 @@ class IndentSexpAutoCommand(SexpIndentCommand):
             curr_char = self.view.substr(start_pos)
             start_pos += 1
             if rx_str_comment.search(scope_name):
-                if not seen_string:
-                    code += '999'
-                seen_string = True
+                code += '0'
             else:
                 code += curr_char
-                seen_string = False
         dialect = get_dialect(self.view)
         yasi_args = '--no-compact --dialect={0}'.format(dialect)
         result = yasi.indent_code(code, yasi_args)

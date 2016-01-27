@@ -1,3 +1,15 @@
+### Unreleased
+- Fixes:
+  - Wrong auto-indent when a string is an argument to the current function call
+    e.g.
+
+    ```clojure
+      (blablabla "that stuff: " []
+                                (println "blablabla!"))
+    ``
+    Placing the cursor between the square brackets and hitting enter will place the
+    closing square bracket below the word **that**
+
 ### v0.4.2 - 26th January 2016
 - Update to yasi v2.0.1
 
