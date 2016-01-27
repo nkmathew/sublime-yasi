@@ -261,13 +261,14 @@ class IndentSexpAutoCommand(SexpIndentCommand):
         yasi_args = '--no-compact --dialect={0}'.format(dialect)
         result = yasi.indent_code(code, yasi_args)
         open_brackets = result['bracket_locations']
+        indent_level = 0
         if open_brackets:
             indent_level = open_brackets[-1]['indent_level']
-            self.view.insert(edit, offset, '\n' + ' ' * indent_level)
         elif rx_str_comment.search(self.view.scope_name(offset)):
-            self.view.insert(edit, offset, '\n' + '  ' * curr_indent)
+            indent_level = curr_indent
         else:
-            self.view.insert(edit, offset, '\n')
+            indent_level = 0
+        self.view.insert(edit, offset, '\n' + ' ' * indent_level)
 
 
 class IndentSexpFileCommand(SexpIndentCommand):
