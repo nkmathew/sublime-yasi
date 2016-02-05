@@ -16,7 +16,7 @@ try:
 except ImportError:
     from . import yasi
 
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 
 
 def log(msg):

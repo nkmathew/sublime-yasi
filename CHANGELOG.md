@@ -1,4 +1,4 @@
-### Unreleased
+### v0.4.3 - February 05, 2016
 - Fixes:
   - Wrong auto-indent when a string is an argument to the current function call
     e.g.
